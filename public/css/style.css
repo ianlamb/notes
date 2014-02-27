@@ -1,0 +1,133 @@
+/*
+    Color Palette
+		blue = #0392c1
+		gold = #ffba00
+
+	Style Reference
+		-webkit-
+		-moz-
+		transition: all .2s;
+		border-radius: 0px 0px 15px 15px;
+		box-shadow: 0px 0px 5px #555;
+		text-shadow: 0px 0px 5px #555;
+		background: -webkit-gradient(linear, left top, left bottom, from(#33C2F1), to(#0392c1));
+		background: -moz-linear-gradient(top,  #33C2F1,  #0392c1);
+		filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#33C2F1', endColorstr='#0392c1');
+		@font-face{ font-family: titlefont; src: url('../fonts/GODOFWAR.TTF'); }
+*/
+
+/* BASE DEFINITIONS */
+html ,body {
+    font-family: verdana, helvetica, sans-serif;
+	font-size: 1.0em;
+	color: #ccc;
+    background: #454545;
+	padding: 0;
+	margin: 0;
+}
+
+label { color: #ccc;}
+fieldset { border: 1px solid #666; }
+fieldset legend { background: transparent; border: 1px solid #666; }
+
+a:link,a:visited {
+    color: #fff;
+    text-decoration: none;
+}
+a:hover{
+    color: orangered;
+}
+
+/* OBLIGATORY CLASSES */
+.clear{ clear:both; }
+.bold{ font-weight:bold; }
+.italic{ font-style:italic; }
+.underline{ text-decoration:underline; }
+.spacer{ display:block; height:20px; }
+.float_right{ float:right; }
+.float_left{ float:left; }
+.center{ margin: 0 auto; }
+.no_border{ border:0; }
+.biggest{ font-size:3.4em; }
+.bigger{ font-size:2.2em; }
+.big{ font-size:1.4em; }
+.medium{ font-size: 1.0em }
+.small { font-size: 0.8em }
+.smallest { font-size: 0.6em }
+
+/* MAIN ELEMENTS */
+#content {
+	position: relative;
+	top: 20px;
+}
+
+#newNote {
+	padding: 0;
+	border: 0;
+	box-shadow: none;
+	background: transparent;
+	color: #ccc;
+}
+
+.note-date {
+	color: rgb(46, 149, 197);
+	font-weight: bold;
+	cursor: default;
+}
+.timestamp {
+	color: #999;
+	font-family: monospace;
+}
+ul.note-history {
+	margin: 0 0 20px 0;
+	padding: 0 0 10px 0;
+	border-bottom: 1px solid rgb(46, 149, 197);
+}
+ul.note-history li {
+	list-style-type: none;
+	cursor: default;
+	/*border-bottom: 1px solid transparent;*/
+}
+ul.note-history li:hover {
+	/*border-bottom-color: #555;*/
+}
+ul.note-history li.important {
+	color: orangered;
+}
+ul.note-history li .mark-important {
+	position: absolute;
+	left: 5px;
+	margin-top: 5px;
+	display: none;
+	font-family: monospace;
+	color: #999;
+}
+ul.note-history li .delete {
+	position: absolute;
+	left: 20px;
+	margin-top: 3px;
+	display: none;
+	font-family: monospace;
+	color: #999;
+}
+ul.note-history li:hover .timestamp {
+	visibility: hidden;
+}
+ul.note-history li:hover .mark-important,
+ul.note-history li:hover .delete {
+	display: inline;
+}
+ul.note-history li.important .mark-important {
+	display: inline;
+	color: orangered;
+}
+
+/* MEDIA: TABLET */
+@media screen and (max-width: 767px) {
+	
+}
+
+/* MEDIA: MOBILE */
+@media screen and (max-width: 480px) {
+	
+}
