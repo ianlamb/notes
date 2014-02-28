@@ -7,6 +7,8 @@
 
 var newNote, noteField, noteFieldVal, timeStamp, dateStamp, dateTimeStamp, noteData, now, todaysNotes, workingDate, isToday, animationDelay;
 
+var noteToolbar = '<span class="note-toolbar"><i class="fa fa-star-o mark-important"></i><i class="fa fa-pencil edit"></i><i class="fa fa-times delete"></i></span>';
+
 var diaryManager = {
 	loadNotes: function() {
 		workingDate = getDateStamp(new Date(0));
@@ -29,7 +31,7 @@ var diaryManager = {
 					$('#diary').append('<label class="note-date">' + dateStamp + (isToday ? ' [Today]' : '') + '</label><ul class="note-history ' + (isToday ? 'today' : '') + '" style="display:none"></ul>');
 				}
 
-				newNote = '<li id="' + notes[i].id + '"><span class="timestamp">[' + timeStamp + ']</span> ' + notes[i].body + '<span class="mark-important">*</span><span class="delete">x</span></li>';
+				newNote = '<li id="' + notes[i].id + '">' + noteToolbar + '<span class="timestamp">[' + timeStamp + ']</span> ' + notes[i].body + '</li>';
 				animationDelay = $('.note-history').length * 100;
 				$('.note-history').last().append(newNote).delay(animationDelay).slideDown(250);
 			}
@@ -75,7 +77,7 @@ jQuery(document).ready(function ($) {
 			data: noteData,
 			success: function(result) {
 				// display the note
-				newNote = '<li id="' + result.id + '" style="display:none"><span class="timestamp">[' + timeStamp + ']</span> ' + noteFieldVal + '<span class="mark-important">*</span><span class="delete">x</span></li>';
+				newNote = '<li id="' + result.id + '" style="display:none">' + noteToolbar + '<span class="timestamp">[' + timeStamp + ']</span> ' + noteFieldVal + '</li>';
 
 				if(!$('.note-history').first().hasClass('today')) {
 					$('#diary').prepend('<label class="note-date">' + dateStamp + ' [Today]</label><ul class="note-history today"></ul>');
@@ -92,20 +94,29 @@ jQuery(document).ready(function ($) {
 		});
 	});
 
-	// click on note lines to star/unstar them
-	$('#diary').on('click', 'ul > li > .mark-important', function() {
-		if($(this).parent().hasClass('important')) {
-			$(this).parent().removeClass('important');
+	// click the star to star/unstar them
+	$('#diary').on('click', 'ul > li .note-toolbar .mark-important', function() {
+		var noteItem = $(this).parent().parent();
+
+		if(noteItem.hasClass('important')) {
+			noteItem.removeClass('important');
 			// ajax save here
 		} else {
-			$(this).parent().addClass('important');
+			noteItem.addClass('important');
 			// ajax save here
 		}
 	});
 
+	// click the pencil to edit note line
+	$('#diary').on('click', 'ul > li .note-toolbar .mark-important', function() {
+		var noteItem = $(this).parent().parent();
+		
+		alert('Not Yet Implemented');
+	});
+
 	// click the 'x' to delete notes
-	$('#diary').on('click', 'ul > li > .delete', function() {
-		var noteItem = $(this).parent();
+	$('#diary').on('click', 'ul > li .note-toolbar .delete', function() {
+		var noteItem = $(this).parent().parent();
 
 		// hide note now for responsiveness
 		noteItem.fadeOut(500);

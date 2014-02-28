@@ -13,51 +13,6 @@ class UserController extends BaseController {
 
     protected $layout = 'layouts.master';
 
-	public function getRegister()
-	{
-		return View::make('user.register');
-	}
-
-	public function postRegister()
-	{
-		// validation
-		$rules = array(
-			'email' => 'required|email|unique:users',
-			'password' => 'required|confirmed|between:4,16'
-		);
-		
-		$messages = array(
-			'same'    => 'The :attribute and :other must match.',
-			'size'    => 'The :attribute must be exactly :size.',
-			'between' => 'The :attribute must be between :min - :max.',
-			'in'      => 'The :attribute must be one of the following types: :values',
-		);
-
-		$validation = Validator::make(Input::all(), $rules, $messages);
-
-		if ($validation->fails())
-		{
-			return Redirect::to('user/register')->with_errors($validation);
-		}
-		
-		$email = Input::get('email');
-		$password = Input::get('password');
-		
-		// register
-		try {
-			$user = new User();
-			$user->email = $email;
-			$user->password = Hash::make($password);
-			$user->save();
-			Auth::login($user);
-		
-			return Redirect::to('/');
-		}  catch( Exception $e ) {
-			Session::flash('status_error', 'An error occurred while creating a new user - please try again.');
-			return Redirect::to('/user/register');
-		}
-	}
-
 	public function getLogin()
 	{
 		return View::make('user.login');
@@ -67,7 +22,7 @@ class UserController extends BaseController {
 	{
 		// validation
 		$rules = array(
-			'email' => 'required|email|exists:users',
+			'email' => 'required|email',
 			'password' => 'required|between:4,16'
 		);
 		
@@ -83,12 +38,12 @@ class UserController extends BaseController {
 
 		if ($validation->fails())
 		{
-			return Redirect::to('user/login')->with_errors($validation);
+			return Redirect::to('user/login')->with('errors', $validation->messages());
 		}
 
 		$email = Input::get('email');
 		$password = Input::get('password');
-		
+
 		if(Input::get('register') == 1) {
 			// register
 			try {
@@ -99,9 +54,9 @@ class UserController extends BaseController {
 				Auth::login($user);
 			
 				return Redirect::to('/');
-			}  catch( Exception $e ) {
+			} catch( Exception $e ) {
 				Session::flash('status_error', 'An error occurred while creating a new user - please try again.');
-				return Redirect::to('/user/register');
+				return Redirect::to('/user/login');
 			}
 		} else {
 			// login
@@ -129,7 +84,9 @@ class UserController extends BaseController {
 
 	public function postCheck()
 	{
-		if(!Input::old('email') && User::all()->where('email', Input::get('email')))
+		$result = User::where('email', Input::get('email'))->first();
+		
+		if(!Input::old('email') && !empty($result) )
 			return Response::json(array('status' => 'exists'));
 		
 		return Response::json(array('status' => 'notfound'));

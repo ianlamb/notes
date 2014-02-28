@@ -55,6 +55,13 @@ a:hover{
 .small { font-size: 0.8em }
 .smallest { font-size: 0.6em }
 
+/* FOUNDATION OVERRIDES */
+p.alert-error, .alert-error {
+	font-size: 10px;
+	color: orangered;
+	margin-top: -10px;
+}
+
 /* MAIN ELEMENTS */
 #content {
 	position: relative;
@@ -64,6 +71,7 @@ a:hover{
 #newNote {
 	padding: 0;
 	border: 0;
+	border-bottom: 2px inset #3f3f3f;
 	box-shadow: none;
 	background: transparent;
 	color: #ccc;
@@ -94,32 +102,30 @@ ul.note-history li:hover {
 ul.note-history li.important {
 	color: orangered;
 }
-ul.note-history li .mark-important {
+ul.note-history li .note-toolbar i {
 	position: absolute;
-	left: 5px;
+	left: 10px;
 	margin-top: 5px;
 	display: none;
-	font-family: monospace;
 	color: #999;
+	font-size: 1.2em;
 }
-ul.note-history li .delete {
-	position: absolute;
-	left: 20px;
-	margin-top: 3px;
-	display: none;
-	font-family: monospace;
-	color: #999;
-}
+ul.note-history li .note-toolbar i:hover { color: #f6f6f6; }
+ul.note-history li .note-toolbar .mark-important { left: 0px; }
+ul.note-history li .note-toolbar .edit { left: 30px; }
+ul.note-history li .note-toolbar .delete { left: 60px; }
+
 ul.note-history li:hover .timestamp {
 	visibility: hidden;
 }
-ul.note-history li:hover .mark-important,
-ul.note-history li:hover .delete {
+ul.note-history li:hover .note-toolbar i {
 	display: inline;
 }
-ul.note-history li.important .mark-important {
-	display: inline;
+ul.note-history li.important .note-toolbar .mark-important {
 	color: orangered;
+}
+ul.note-history li.important .note-toolbar .mark-important:before {
+	content: "\f005";
 }
 
 /* MEDIA: TABLET */

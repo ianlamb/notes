@@ -14,7 +14,7 @@
 Route::get('/', 'NotesController@getDiary');
 //Route::get('/', array('before' => 'auth'));
 
-Route::post('note', array('before' => 'csrf', function() {
+Route::post('notes', array('before' => 'csrf', function() {
 	$token = Request::ajax() ? Request::header('X-CSRF-Token') : Input::get('_token');
 	if (Session::token() != $token) {
 		throw new Illuminate\Session\TokenMismatchException;

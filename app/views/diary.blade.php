@@ -1,6 +1,7 @@
 @extends('layouts.master')
 
 @section('scripts')
+	{{ HTML::script('js/app.js') }}
 @endsection
 
 @section('content')
