@@ -35,9 +35,11 @@ class NotesController extends BaseController {
 	public function postCreate()
 	{
 		$note = new Note;
+
 		$note->user_id = Auth::user()->id;
 		$note->body = Input::get('body');
 		$note->timestamp = new DateTime(Input::get('timestamp'));
+
 		$note->save();
 
 		return Response::json(array('id' => $note->id));
@@ -45,10 +47,13 @@ class NotesController extends BaseController {
 
 	public function postUpdate()
 	{
-		$note = new Note;
-		$note->user_id = Auth::user()->id;
-		$note->body = Input::get('body');
-		$note->timestamp = new DateTime(Input::get('timestamp'));
+		$note = Note::find(Input::get('id'));
+
+		if(Input::old('active'))
+			$note->active = Input::get('active');
+		if(Input::old('important'))
+			$note->important = Input::get('important');
+
 		$note->save();
 
 		return Response::json(array('id' => $note->id));
@@ -56,8 +61,7 @@ class NotesController extends BaseController {
 
 	public function postDelete()
 	{
-		$id = Input::get('id');
-		Note::destroy($id);
+		Note::destroy(Input::get('id'));
 
 		return Response::json(array('status' => 'success'));
 	}

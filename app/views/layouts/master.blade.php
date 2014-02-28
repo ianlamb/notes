@@ -21,9 +21,7 @@
 		<script type="text/javascript">
 			$(function() {
 			    $.ajaxSetup({
-			        headers: {
-			            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-			        }
+			        headers: { 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content') }
 			    });
 			});
 		</script>
@@ -32,18 +30,27 @@
 	</head>
 	<body>
 		<!-- BEGIN TOP BAR -->
-		<nav class="top-bar hide-for-small" data-topbar="">
+		<nav class="top-bar" data-topbar="">
 			<ul class="title-area">
 				<li class="name">
-					<h1><a href="index.html">Tempus Notes</a></h1>
+					<h1><a href="/">Tempus Notes</a></h1>
 				</li>
 			</ul>
 
 			<section class="top-bar-section">
 				<ul class="right">
-					<li>{{ HTML::link('#', $user->email) }}</li>
+					@if(isset($user))
 					<li class="divider"></li>
-					<li>{{ HTML::link('user/logout', 'Logout') }}</li>
+					<li class="has-dropdown not-click">
+						{{ HTML::link('#', $user->email) }}
+						<ul class="dropdown">
+							<li>{{ HTML::link('home/about', 'About') }}</li>
+							<li>{{ HTML::link('user/settings', 'Settings') }}</li>
+							<li><hr/></li>
+							<li>{{ HTML::link('user/logout', 'Logout') }}</li>
+						</ul>
+					</li>
+					@endif
 				</ul>
 			</section>
 		</nav>

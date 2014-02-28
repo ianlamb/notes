@@ -11,11 +11,6 @@
 |
 */
 
-Route::filter('auth', function()
-{
-	if (Auth::guest()) return Redirect::to('user/login');
-});
-
 Route::get('/', 'NotesController@getDiary');
 //Route::get('/', array('before' => 'auth'));
 

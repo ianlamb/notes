@@ -85,20 +85,39 @@ class UserController extends BaseController {
 		{
 			return Redirect::to('user/login')->with_errors($validation);
 		}
+
+		$email = Input::get('email');
+		$password = Input::get('password');
 		
-		// login
-		$credentials  = array(
-			'email' => Input::get('email'),
-			'password' => Input::get('password')
-		);
-		
-		if ( Auth::attempt($credentials) )
-		{
-			return Redirect::to('/');
-		}
-		else
-		{
-			return Redirect::to('user/login')->with('login_errors', true);
+		if(Input::get('register') == 1) {
+			// register
+			try {
+				$user = new User();
+				$user->email = $email;
+				$user->password = Hash::make($password);
+				$user->save();
+				Auth::login($user);
+			
+				return Redirect::to('/');
+			}  catch( Exception $e ) {
+				Session::flash('status_error', 'An error occurred while creating a new user - please try again.');
+				return Redirect::to('/user/register');
+			}
+		} else {
+			// login
+			$credentials  = array(
+				'email' => $email,
+				'password' => $password
+			);
+			
+			if ( Auth::attempt($credentials) )
+			{
+				return Redirect::to('/');
+			}
+			else
+			{
+				return Redirect::to('user/login')->with('login_errors', true);
+			}
 		}
 	}
 
@@ -106,6 +125,14 @@ class UserController extends BaseController {
 	{
 		Auth::logout();
         return Redirect::to('user/login');
+	}
+
+	public function postCheck()
+	{
+		if(!Input::old('email') && User::all()->where('email', Input::get('email')))
+			return Response::json(array('status' => 'exists'));
+		
+		return Response::json(array('status' => 'notfound'));
 	}
 
 }

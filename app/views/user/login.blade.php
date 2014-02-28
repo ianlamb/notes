@@ -1,10 +1,9 @@
 @extends('layouts.master')
 
 @section('content')
-	<div id="login-div" class="large-4 large-offset-4 columns">
-		{{ Form::open(array('url' => 'user/login', 'method' => 'POST')) }}
-			<fieldset>
-				<legend>Login</legend>
+	<div id="loginDiv" class="large-4 large-offset-4 columns panel">
+		{{ Form::open(array('url' => 'user/login', 'method' => 'POST', 'id' => 'loginForm')) }}
+				<h4>Login</h4>
 				
 				<?=Form::label('email', 'Email')?>
 				<?=Form::text('email')?>
@@ -22,9 +21,36 @@
 					@endforeach
 				@endif
 				
-				<br />
-				<?=Form::submit('Authenticate', array('class' => 'small button'))?>
-			</fieldset>
+				<input type="hidden" name="register" id="register" value="0" />
+				<?=Form::button('Authenticate', array('id' => 'authBtn', 'class' => 'small button'))?>
 		{{ Form::close() }}
 	</div>
+
+	<script type="text/javascript">
+		$(function() {
+			$('#authBtn').on('click', '', function(){
+				$.ajax({
+					url: '/user/check',
+					data: 'email=' + $('#email').val(),
+					type: 'POST',
+    				contentType: "application/json",
+					success: function(result) {
+						if(result.status == "exists") {
+							//$('#loginForm').submit();
+							alert('login');
+						} else if(result.status == "notfound") {
+							if(confirm('This account does not exist. Click "OK" to register and continue with login.')) {
+								$('#register').val(1);
+								//$('#loginForm').submit();
+								alert('register');
+							}
+						}
+					},
+					error: function() {
+
+					}
+				});
+			});
+		});
+	</script>
 @stop

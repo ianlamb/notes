@@ -26,7 +26,7 @@ html ,body {
 	margin: 0;
 }
 
-label { color: #ccc;}
+label { color: #333; }
 fieldset { border: 1px solid #666; }
 fieldset legend { background: transparent; border: 1px solid #666; }
 
