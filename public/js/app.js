@@ -7,9 +7,11 @@
 
 var newNote, noteField, noteFieldVal, timeStamp, dateStamp, dateTimeStamp, noteData, now, todaysNotes, workingDate, isToday, animationDelay;
 
+var hashtagExp = new RegExp(/\s#\S+\s/);
 var noteToolbar = '<span class="note-toolbar"><i class="fa fa-star-o mark-important"></i><i class="fa fa-pencil edit"></i><i class="fa fa-times delete"></i></span>';
 
 var diaryManager = {
+	filters: [],
 	loadNotes: function() {
 		workingDate = getDateStamp(new Date(0));
 		$.get('/notes/all', '', function(notes) {
@@ -31,12 +33,75 @@ var diaryManager = {
 					$('#diary').append('<label class="note-date">' + dateStamp + (isToday ? ' [Today]' : '') + '</label><ul class="note-history ' + (isToday ? 'today' : '') + '" style="display:none"></ul>');
 				}
 
-				newNote = '<li id="' + notes[i].id + '">' + noteToolbar + '<span class="timestamp">[' + timeStamp + ']</span> ' + notes[i].body + '</li>';
+				newNote = '<li id="' + notes[i].id + '">' + noteToolbar + '<span class="timestamp">[' + timeStamp + ']</span> <span class="body">' + diaryManager.parseTags(notes[i].body) + '</span></li>';
 				animationDelay = $('.note-history').length * 100;
 				$('.note-history').last().append(newNote).delay(animationDelay).slideDown(250);
 			}
 
 			$('#newNote').focus();
+		});
+	},
+	parseTags: function(textBody) {
+		var parsedText = '';
+		var postHashtag = false;
+		var openTag = '<span class="tag-link">';
+		var closeTag = '</span>';
+
+		for(var i = 0; i < textBody.length; i++) {
+			if(textBody[i] == '#') {
+				if(postHashtag) {
+					parsedText += closeTag;
+				}
+				parsedText += openTag;
+				postHashtag = true;
+			}
+			if(postHashtag && (textBody[i] == ' ' || i == textBody.length)) {
+				parsedText += closeTag;
+				postHashtag = false;
+			}
+			parsedText += textBody[i];
+		}
+
+		return parsedText;
+	},
+	addFilter: function(tagName) {
+		if($.inArray(tagName, diaryManager.filters) < 0) {
+			diaryManager.filters.push(tagName);
+			$('#filters').append('<li class="tag"><span class="name">' + tagName + '</span><span class="remove"><i class="fa fa-times"></i></span></li>');
+
+			$('#diary ul li span.body').each(function() {
+				if($(this).html().indexOf(tagName) >= 0)
+					$(this).parent().addClass('filter-match');
+			});
+
+			diaryManager.applyFilters();
+		}
+	},
+	removeFilter: function(tagName) {
+		if($.inArray(tagName, diaryManager.filters) >= 0) {
+			var idx = diaryManager.filters.indexOf(tagName);
+			if(idx >= 0)
+				diaryManager.filters.splice(idx, 1);
+
+			$('#filters li').each(function() {
+				if($(this).html().indexOf(tagName) >= 0)
+					$(this).remove();
+			});
+
+			$('#diary ul li span.body').each(function() {
+				if($(this).html().indexOf(tagName) >= 0)
+					$(this).parent().removeClass('filter-match');
+			});
+
+			diaryManager.applyFilters();
+		}
+	},
+	applyFilters: function() {
+		$('#diary ul li').each(function() {
+			if($(this).hasClass('filter-match') || diaryManager.filters.length == 0)
+				$(this).slideDown();
+			else
+				$(this).slideUp();
 		});
 	}
 }
@@ -77,7 +142,7 @@ jQuery(document).ready(function ($) {
 			data: noteData,
 			success: function(result) {
 				// display the note
-				newNote = '<li id="' + result.id + '" style="display:none">' + noteToolbar + '<span class="timestamp">[' + timeStamp + ']</span> ' + noteFieldVal + '</li>';
+				newNote = '<li id="' + result.id + '" style="display:none">' + noteToolbar + '<span class="timestamp">[' + timeStamp + ']</span> <span class="body">' + diaryManager.parseTags(noteFieldVal) + '</span></li>';
 
 				if(!$('.note-history').first().hasClass('today')) {
 					$('#diary').prepend('<label class="note-date">' + dateStamp + ' [Today]</label><ul class="note-history today"></ul>');
@@ -108,14 +173,14 @@ jQuery(document).ready(function ($) {
 	});
 
 	// click the pencil to edit note line
-	$('#diary').on('click', 'ul > li .note-toolbar .mark-important', function() {
+	$('#diary').on('click', 'ul li .note-toolbar .mark-important', function() {
 		var noteItem = $(this).parent().parent();
 		
 		alert('Not Yet Implemented');
 	});
 
 	// click the 'x' to delete notes
-	$('#diary').on('click', 'ul > li .note-toolbar .delete', function() {
+	$('#diary').on('click', 'ul li .note-toolbar .delete', function() {
 		var noteItem = $(this).parent().parent();
 
 		// hide note now for responsiveness
@@ -134,6 +199,18 @@ jQuery(document).ready(function ($) {
 				alert('Delete failed');
 			}
 		});
+	});
+
+	// add filter
+	$('#diary').on('click', 'ul li .tag-link', function() {
+		var tag = $(this).html();
+		diaryManager.addFilter(tag);
+	});
+
+	// remove filter
+	$('#filters').on('click', 'li .remove', function() {
+		var tag = $(this).parent().children('.name').html();
+		diaryManager.removeFilter(tag);
 	});
 });
 
