@@ -86,8 +86,11 @@ p.alert-error, .alert-error {
 }
 
 /* note history */
-.note-item {}
-.note-item.edit-context { background: #555; }
+ul.note-history {
+	margin: 0 0 20px 0;
+	padding: 0 0 10px 0;
+	border-bottom: 1px solid rgb(46, 149, 197);
+}
 .note-date {
 	color: rgb(46, 149, 197);
 	font-weight: bold;
@@ -97,17 +100,16 @@ p.alert-error, .alert-error {
 	color: #999;
 	font-family: monospace;
 }
-ul.note-history {
-	margin: 0 0 20px 0;
-	padding: 0 0 10px 0;
-	border-bottom: 1px solid rgb(46, 149, 197);
-}
 ul.note-history li {
 	list-style-type: none;
 	cursor: default;
+	border-left: 2px solid transparent;
+	padding: 0 3px;
+	margin: 0 -5px;
 }
+ul.note-history li.edit-context { background: #555; }
 ul.note-history li.important {
-	color: rgb(224, 136, 104);
+	border-left: 2px solid orangered;
 }
 ul.note-history li .note-toolbar i {
 	position: absolute;
