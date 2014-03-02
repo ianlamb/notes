@@ -31,11 +31,15 @@ fieldset { border: 1px solid #666; }
 fieldset legend { background: transparent; border: 1px solid #666; }
 
 a:link,a:visited {
-    color: #fff;
-    text-decoration: none;
+    color: rgb(121, 172, 196);
+    font-family: monospace;
+    font-size: 1.2em;
+    transition: all .2s;
 }
 a:hover{
-    color: orangered;
+    color: #efefef;
+    text-shadow: 0 0 3px #efefef;
+    transition: all .2s;
 }
 
 /* OBLIGATORY CLASSES */
@@ -131,10 +135,15 @@ ul.note-history li.important .note-toolbar .mark-important:before {
 /* filters */
 .tag-link {
 	cursor: pointer;
-	color: #33AC63;
+	color: #69AD72;
+	font-size: 1.2em;
+    font-family: monospace;
+    transition: all .2s;
 }
 .tag-link:hover {
-	color: #33BC66;
+    color: #efefef;
+    text-shadow: 0 0 3px #efefef;
+    transition: all .2s;
 }
 ul#filters {
 	list-style-type: none;

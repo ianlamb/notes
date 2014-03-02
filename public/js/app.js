@@ -15,6 +15,7 @@
 /********************/
 
 // constants
+var debug = true;
 var hashtagExp = new RegExp(/\s#\S+\s/);
 var noteToolbar = '<span class="note-toolbar"><i class="fa fa-star-o mark-important"></i><i class="fa fa-pencil edit"></i><i class="fa fa-times delete"></i></span>';
 
@@ -191,7 +192,7 @@ var diaryManager = {
 			parsedText += textBody[i];
 		}
 
-		return parsedText;
+		return parsedText.linkify();
 	},
 	addFilter: function(tagName) {
 		if($.inArray(tagName, diaryManager.filters) < 0) {
@@ -227,7 +228,7 @@ var diaryManager = {
 	},
 	applyFilters: function() {
 		$('#diary ul').show();
-		
+
 		$('#diary ul li').each(function() {
 			if($(this).hasClass('filter-match') || diaryManager.filters.length == 0)
 				$(this).slideDown(300);
@@ -264,8 +265,14 @@ jQuery(document).ready(function ($) {
 	/******************/
 
 	// refocus the new note field any time a key is pressed
-	$(document).on('keypress', null, '', function() {
+	$(document).on('keypress', null, '', function(event) {
 		noteField.focus();
+		if(debug) console.log('Keypress: ' + event.which);
+	});
+
+	// return to "new" mode any time the esc key is pressed
+	$(document).on('keypress', null, 'esc', function() {
+		diaryManager.newMode();
 	});
 
 	// press enter to submit a new note line
@@ -338,4 +345,20 @@ function getTimeStamp(dateObj) {
 
 function getDateStamp(dateObj) {
 	return dateObj.getFullYear().padLeft(4) + '-' + (dateObj.getMonth()+1).padLeft(2) + '-' + dateObj.getDate().padLeft(2);
+}
+
+String.prototype.linkify = function() {
+	var urlExp = new RegExp(/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/g);
+	var newString = this;
+
+	var matches = this.match(urlExp);
+
+	if(matches) {
+		for(var i = 0; i < matches.length; i++) {
+			newString = (newString.replace(matches[i], '<a href="' + matches[i] + '">' + matches[i] + '</a>'));
+		}
+		return newString;
+	}
+
+	return this;
 }
