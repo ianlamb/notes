@@ -49,9 +49,10 @@ class NotesController extends BaseController {
 	{
 		$note = Note::find(Input::get('id'));
 
-		if(Input::old('active'))
-			$note->active = Input::get('active');
-		if(Input::old('important'))
+		if(Input::get('body') != null)
+			$note->body = Input::get('body');
+
+		if(Input::get('important') != null)
 			$note->important = Input::get('important');
 
 		$note->save();
